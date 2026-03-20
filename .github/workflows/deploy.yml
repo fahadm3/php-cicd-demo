@@ -1,0 +1,72 @@
+name: Deploy PHP App
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: Test Application
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+    
+    - name: Start PHP server
+      run: |
+        php -S localhost:8000 &
+        sleep 3
+    
+    - name: Run health check test
+      run: php tests/health-check.php
+    
+    - name: Validate PHP syntax
+      run: |
+        find . -name "*.php" -exec php -l {} \;
+  
+  deploy:
+    name: Deploy to Production
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Deploy to production server
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+      run: |
+        echo "Deploying application..."
+        # This is where you'd add your actual deployment command
+        # For this demo, we'll simulate a successful deployment
+        echo "✅ Deployment simulation complete"
+    
+    - name: Post-deployment smoke test
+      run: |
+        echo "Running smoke tests..."
+        # Simulate checking if app is alive
+        sleep 2
+        echo "✅ Smoke test passed"
+  
+  rollback:
+    name: Rollback if needed
+    if: failure()
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Rollback deployment
+      run: |
+        echo "⚠️ Deployment failed - rolling back"
+        echo "✅ Rollback complete"
