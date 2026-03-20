@@ -83,8 +83,7 @@
         </div>
         
         <div class="time-box" id="live-time">
-            <!-- JavaScript will update this -->
-            Loading live time...
+                        Loading live time...
         </div>
         
         <button onclick="refreshTime()">🔄 Refresh Time</button>
@@ -98,7 +97,7 @@
     </div>
     
     <script>
-        // Simple JavaScript function for live updates
+        
         function refreshTime() {
             document.getElementById('live-time').innerHTML = 'Loading...';
             
