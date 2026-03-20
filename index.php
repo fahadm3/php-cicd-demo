@@ -69,7 +69,7 @@
         <h1>🚀 PHP CI/CD Demo Application</h1>
         
         <div class="version">
-            Version: 1.0.0
+            Version: 1.0.1
         </div>
         
         <div class="info-box">
